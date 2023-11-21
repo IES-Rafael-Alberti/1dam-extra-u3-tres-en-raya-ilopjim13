@@ -74,11 +74,18 @@ def verificar_ganador(tablero) -> tuple:
     # TODO: Verificar filas y columnas
     # Si el contenido de las celdas de una fila o columna es igual y distinto de cero
     # retornar una de las celdas (jugador) y True
-    ???
+    for i in range(len(tablero)):
+        if tablero[0][i] == 1 and tablero[1][i] == 1 and tablero[2][i] == 1 or tablero[i][0] == 1 and tablero[i][1] == 1 and tablero[i][2] == 1:
+            return "1", True
+        if tablero[0][i] == 2 and tablero[1][i] == 2 and tablero[2][i] == 2 or tablero[i][0] == 2 and tablero[i][1] == 2 and tablero[i][2] == 2:
+            return "2", True
 
     # TODO: Verificar diagonales
     # Igual en las diagonales...
-    ???
+    if tablero[0][0] == 1 and tablero[1][1] == 1 and tablero[2][2] == 1 or tablero[0][2] == 1 and tablero[1][1] == 1 and tablero[2][0] == 1:
+        return "1", True
+    if tablero[0][2] == 2 and tablero[1][1] == 2 and tablero[2][0] == 2 or tablero[0][0] == 2 and tablero[1][1] == 2 and tablero[2][2] == 2:
+        return "2", True
 
     # Si no retorno nada, quiere decir que aún no ganó nadie...
     return None, False
