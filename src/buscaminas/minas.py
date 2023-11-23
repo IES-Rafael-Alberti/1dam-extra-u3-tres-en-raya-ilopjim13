@@ -52,6 +52,7 @@ el número total de minas adyacentes que tiene la celda.
 
 """
 
+import os
 import random
 
 # Acciones del jugador
@@ -70,6 +71,10 @@ BANDERA = "F"
 VALOR_CELDA_DEFECTO = "."
 
 
+def borrarPantalla():
+    os.system("cls")
+
+
 def generar_tablero() -> list:
     """
     Esta función genera un tablero de juego vacío y coloca las minas en el tablero. Luego, calcula el número de minas adyacentes a cada celda.
@@ -86,20 +91,17 @@ def colocar_minas(tablero:list):
     """
     Esta función coloca las minas en el tablero de juego. Se asegura de que el número de minas colocadas sea igual a NUMERO_MINAS.
     """
-    conjunto = [0,0,0,1,0,2,0,3,0,4,0,5,0,6,0,7,
-                1,0,1,1,1,2,1,3,1,4,1,5,1,6,1,7,
-                2,0,2,1,2,2,2,3,2,4,2,5,2,6,2,7,
-                3,0,3,1,3,2,3,3,3,4,3,5,3,6,3,7,
-                4,0,4,1,4,2,4,3,4,4,4,5,4,6,4,7,
-                5,0,5,1,5,2,5,3,5,4,5,5,5,6,5,7,
-                6,0,6,1,6,2,6,3,6,4,6,5,6,6,6,7,
-                7,0,7,1,7,2,7,3,7,4,7,5,7,6,7,7]
     minas_puesto = False
     while not minas_puesto:
-        tablero[conjunto.pop(conjunto[random.randint(0, len(conjunto)-1)])][conjunto.pop(conjunto[random.randint(0, len(conjunto)-1)])] = MINA
-        contar = tablero.count(MINA)
-        if  contar== 10:
-            minas_puesto = True
+        contar = 0
+        tablero[random.randint(0, len(tablero)-1)][random.randint(0, len(tablero)-1)] = MINA
+        for i in range(FILAS):
+            for j in range(COLUMNAS):
+                i = int(i)
+                j = int(j)
+                contar += tablero[i][j].count(MINA)
+            if  contar== 10:
+                return True
             
 
 
@@ -112,8 +114,10 @@ def calcular_numeros(tablero):
         for columna in range(COLUMNAS):
             if tablero[fila][columna] != MINA:
                 numero_minas = contar_minas_adyacentes(tablero, fila, columna)
-                if numero_minas <= 0:
+                if numero_minas > 0:
                     tablero[fila][columna] = str(numero_minas)
+                if numero_minas == 0:
+                    tablero[fila][columna] = str(VALOR_CELDA_DEFECTO)
 
 
 def contar_minas_adyacentes(tablero:list, fila, columna):
@@ -129,7 +133,88 @@ def contar_minas_adyacentes(tablero:list, fila, columna):
         for j in str(columna):
             i = int(i)
             j = int(j)
-            minas = tablero[i][j].count(MINA)
+            if i == 0 and j == 0:
+                b = j + 1
+                d = i + 1
+                a2 = tablero[i][b].count(MINA)
+                a3 = tablero[d][j].count(MINA)
+                a8 = tablero[d][b].count(MINA)
+                minas += a2 + a3 + a8
+            elif i == 0 and j > 0 and j != 7:
+                a = j - 1
+                b = j + 1
+                d = i + 1
+                a1 = tablero[i][a].count(MINA)
+                a2 = tablero[i][b].count(MINA)
+                a4 = tablero[d][j].count(MINA)
+                a6 = tablero[d][a].count(MINA)
+                a7 = tablero[d][b].count(MINA)
+                minas += a1 + a2 + a4+ a6 + a7
+            elif j == 7 and i == 0:
+                a = j - 1
+                d = i + 1
+                a1 = tablero[i][a].count(MINA)
+                a4 = tablero[d][j].count(MINA)
+                a6 = tablero[d][a].count(MINA)
+                minas += a1 + a4 + a6
+            elif j == 0 and i > 0 and i < 7:
+                b = j + 1
+                c = i - 1
+                d = i + 1
+                a2 = tablero[i][b].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a4 = tablero[d][j].count(MINA)
+                a7 = tablero[d][b].count(MINA)
+                a8 = tablero[c][b].count(MINA)
+                minas +=a2 + a3 + a4 + a7 + a8
+            elif j == 7 and i > 0 and i < 7:
+                a = j - 1
+                c = i - 1
+                d = i + 1
+                a1 = tablero[i][a].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a4 = tablero[d][j].count(MINA)
+                a5 = tablero[c][a].count(MINA)
+                a6 = tablero[d][a].count(MINA)
+                minas += a1 + a3 + a4 + a5 + a6
+            elif i == 7 and j > 0 and j < 7:
+                a = j - 1
+                b = j + 1
+                c = i - 1
+                a1 = tablero[i][a].count(MINA)
+                a2 = tablero[i][b].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a5 = tablero[c][a].count(MINA)
+                a8 = tablero[c][b].count(MINA)
+                minas += a1 + a2 + a3+ a5 + a8
+            elif i == 7 and j == 7:
+                a = j - 1
+                c = i - 1
+                a1 = tablero[i][a].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a5 = tablero[c][a].count(MINA)
+                minas += a1 + a3 +a5
+            elif i == 7 and j == 0:
+                b = j + 1
+                c = i - 1
+                a2 = tablero[i][b].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a8 = tablero[c][b].count(MINA)
+                minas +=a2 + a3 + a8
+            else:
+                a = j - 1
+                b = j + 1
+                c = i - 1
+                d = i + 1
+                a1 = tablero[i][a].count(MINA)
+                a2 = tablero[i][b].count(MINA)
+                a3 = tablero[c][j].count(MINA)
+                a4 = tablero[d][j].count(MINA)
+                a5 = tablero[c][a].count(MINA)
+                a6 = tablero[d][a].count(MINA)
+                a7 = tablero[d][b].count(MINA)
+                a8 = tablero[c][b].count(MINA)
+                minas += a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8
     return minas
 
 
@@ -138,7 +223,12 @@ def imprimir_tablero(tablero):
     Esta función toma el tablero como argumento e imprime cada celda del tablero.
     :param tablero: tablero de juego
     """
-    print(tablero)
+    print("  " + " ".join(str(i + 1) for i in range(COLUMNAS)))
+    for fila in range(FILAS):
+        print(str(fila + 1), end=" ")
+        for columna in range(COLUMNAS):
+            print(tablero[fila][columna], end=" ")
+        print()
 
 
 def imprimir_tablero_oculto(tablero, celdas_reveladas, celdas_maracadas):
@@ -174,8 +264,11 @@ def pedir_accion():
     while not accion_valida:
 
         accion = input("Elige una acción (R para revelar, M para marcar): ").upper()
-        fila = input("Ingresa la fila (1-8): ") - 1
-        columna = input("Ingresa la columna (1-8): ") - 1
+        try:
+            fila = int(input("Ingresa la fila (1-8): ")) - 1
+            columna = int(input("Ingresa la columna (1-8): ")) - 1
+        except ValueError:
+            print("**ERROR** Introduzca un número válido.")
 
         if accion in [REVELAR, MARCAR] and 0 <= fila < FILAS and 0 <= columna < COLUMNAS:
             accion_valida = True
@@ -197,10 +290,11 @@ def revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna) -> 
     :return: False si la celda contiene una mina, True en caso contrario
     """
     if tablero[fila][columna] == MINA:  # La celda contiene una mina
-        revelada = False
-    elif tablero[fila][columna] != VACIO:  # La celda contiene un número
+        return True
+    elif tablero[fila][columna] != VACIO and tablero[fila][columna] != VALOR_CELDA_DEFECTO:  # La celda contiene un número
         celdas_reveladas.add((fila, columna))
         celdas_marcadas.discard((fila, columna))
+        return False
     else:  # La celda está vacía
         revelar_celdas_vacias(tablero, celdas_reveladas, celdas_marcadas, fila, columna)
 
@@ -219,7 +313,7 @@ def revelar_celdas_vacias(tablero, celdas_reveladas, celdas_marcadas, fila, colu
         celdas_reveladas.add((fila, columna))
         celdas_marcadas.discard((fila, columna))
         # Si la celda esta vacía, revela también las celdas adyacentes
-        if tablero[fila][columna] == VACIO:
+        if tablero[fila][columna] == VALOR_CELDA_DEFECTO:
             # Recursivamente revela las celdas adyacentes
             for i in range(-1, 2):
                 for j in range(-1, 2):
@@ -235,8 +329,9 @@ def marcar_celda(tablero, celdas_marcadas:set, fila, columna):
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
     """
-    if (columna, fila) in celdas_marcadas:
-        celdas_marcadas.add((columna, fila))
+    if (fila, columna) not in celdas_marcadas:
+        celdas_marcadas.add((fila, columna))
+        tablero[fila][columna] == BANDERA
 
 
 def verificar_victoria(tablero, celdas_reveladas) -> bool:
@@ -265,21 +360,27 @@ def jugar():
     celdas_marcadas = set()
     terminar_juego = False
 
-    while terminar_juego:
+    while not terminar_juego:
+
+        borrarPantalla()
 
         imprimir_tablero_oculto(tablero, celdas_reveladas, celdas_marcadas)
 
         accion, fila, columna = pedir_accion()
 
         if accion == REVELAR:
-            celda_con_mina = not revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna)
+            celda_con_mina = revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna)
 
             if celda_con_mina:
+                print()
                 print("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Oh no! ¡Has pisado una mina!!!!!!!!!!!!!!!!!!!!!")
+                print()
                 imprimir_tablero(tablero)
                 terminar_juego = True
             elif verificar_victoria(tablero, celdas_reveladas):
+                borrarPantalla()
                 print("¡Felicidades! ¡Has ganado el juego!")
+                print()
                 imprimir_tablero(tablero)
                 terminar_juego = True
         elif accion == MARCAR:
