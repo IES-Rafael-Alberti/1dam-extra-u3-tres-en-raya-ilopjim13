@@ -269,11 +269,11 @@ def pedir_accion():
             columna = int(input("Ingresa la columna (1-8): ")) - 1
         except ValueError:
             print("**ERROR** Introduzca un número válido.")
-
-        if accion in [REVELAR, MARCAR] and 0 <= fila < FILAS and 0 <= columna < COLUMNAS:
-            accion_valida = True
-        else:
-            print("Acción inválida. Inténtalo de nuevo.")
+        else: 
+            if accion in [REVELAR, MARCAR] and 0 <= fila < FILAS and 0 <= columna < COLUMNAS:
+                accion_valida = True
+            else:
+                print("Acción inválida. Inténtalo de nuevo.")
     return accion, fila, columna
 
 
