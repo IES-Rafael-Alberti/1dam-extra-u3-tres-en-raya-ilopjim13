@@ -8,9 +8,9 @@ FICHAS = (' ', 'X', 'O')
 #TODO: Matriz 3x3 con los conjuntos de posiciones permitidas desde cada par fila, columna del tablero:
 # Una tupla que contendrá 3 tuplas (filas), cada una tendrá 3 conjuntos (columnas), 
 # donde cada elemento de un conjunto es una posición accesible en forma de tupla (fila, columna)
-POSICIONES_PERMITIDAS = (({(0,0),(0,1),(1,0),(1,1)},{(0,1),(0,0),(0,2),(1,1)},{(0,2),(0,1),(1,2),(1,1)}),
-                          ({(1,0),(0,0),(2,0),(1,1)},{(1,2),(0,2),(2,2),(1,1)}),
-                           ({(2,0),(1,0),(2,1),(1,1)},{(2,1),(2,0),(2,2),(1,1)},{(2,2),(2,1),(1,2),(1,1)}))
+POSICIONES_PERMITIDAS =(({(0,0),(0,1),(1,0),(1,1)},{(0,1),(0,0),(0,2),(1,1)},{(0,2),(0,1),(1,2),(1,1)}),
+                        ({(1,0),(0,0),(2,0),(1,1)},{(1,2),(0,2),(2,2),(1,1)}),
+                        ({(2,0),(1,0),(2,1),(1,1)},{(2,1),(2,0),(2,2),(1,1)},{(2,2),(2,1),(1,2),(1,1)}))
 
 
 def borrarConsola():
@@ -135,17 +135,18 @@ def comprobar_casilla(tablero: tuple,
     if ronda <= 3:
         if tablero[pos_ficha['fila']][pos_ficha['columna']] == 0:
             return True
-    if ronda > 3 and tablero[pos_ficha_a_mover['fila']][pos_ficha_a_mover['columna']] == jugador and pos_ficha == {'fila': None, 'columna': None}:
+    elif ronda > 3 and tablero[pos_ficha_a_mover['fila']][pos_ficha_a_mover['columna']] == jugador and pos_ficha == {'fila': None, 'columna': None}:
         return True
-    cont = 0
-    if ronda > 3 and tablero[pos_ficha['fila']][pos_ficha['columna']] == 0:
+    elif ronda > 3 and pos_ficha_a_mover['fila'] == 1 and pos_ficha_a_mover['columna'] == 1:
+        return True
+    elif ronda > 3 and tablero[pos_ficha['fila']][pos_ficha['columna']] == 0:
+        posicion_nueva = (pos_ficha['fila'], pos_ficha['columna'])
+        a_mover = (pos_ficha_a_mover['fila'], pos_ficha_a_mover['columna'])
         for i in POSICIONES_PERMITIDAS:
-            posicion_nueva = (pos_ficha['fila'], pos_ficha['columna'])
-            a_mover = (pos_ficha_a_mover['fila'], pos_ficha_a_mover['columna'])
             for j in i:
-                if posicion_nueva in j and a_mover in j:
-                    return True
-            cont += 1
+                for h in j:
+                    if a_mover == h and posicion_nueva in j:
+                        return True
         return False
     return False
 
